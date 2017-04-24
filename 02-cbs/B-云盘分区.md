@@ -18,6 +18,7 @@
     vi /etc/fstab
         // 添加一行 /dev/vdb    /mydata     ext3    defaults    0 1
         // 之后重启
-        // 注意，如果有多个分区，则需要这样写 :
+        // 1. 注意，如果有多个分区，则需要这样写 :
         //      /dev/vdb1   /mydata/p1  ext3    defaults    0 1
         //      /dev/vdb2   /mydata/p2  ext3    defaults    0 1
+        // 2. 注意，觉得使用mount和umount比较灵活，在配置文件里写死反而不太好
