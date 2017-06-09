@@ -11,47 +11,47 @@
         //    curl -XPOST ip:port/set -d 'key=xxx&value=yyy'
         // 2. 代码不严谨，仅仅为了学习docker
         
-        ```python
-        #!/usr/bin/python
-		# -*- coding:utf-8 -*-
+```python
+#!/usr/bin/python
+# -*- coding:utf-8 -*-
 
-		# Author 	: 	Lv Yang
-		# Create 	: 	09 June 2017
-		# Modify 	: 	09 June 2017
-		# Version 	: 	1.0
+# Author 	: 	Lv Yang
+# Create 	: 	09 June 2017
+# Modify 	: 	09 June 2017
+# Version 	: 	1.0
 
-		import flask
-		import redis
+import flask
+import redis
 
-		App = flask.Flask(__name__)
-		App.secret_key = '\r\x9d1\xd1\xccW\x9e\xa6\x9a\x97[\xb1=\x93\x87\x15s<\xe8\xe3\x13DL?'
+App = flask.Flask(__name__)
+App.secret_key = '\r\x9d1\xd1\xccW\x9e\xa6\x9a\x97[\xb1=\x93\x87\x15s<\xe8\xe3\x13DL?'
 
-		def getConn():
-			conn = redis.Redis(host = '127.0.0.1', port = 6379, password = '12345678')
-			return conn
+def getConn():
+	conn = redis.Redis(host = '127.0.0.1', port = 6379, password = '12345678')
+	return conn
 
-		@App.route('/get', methods = ['GET'])
-		def get():
-			data = flask.request.form
-			key = data['key']
-			conn = getConn()
-			value = conn.get(key)
-			if value is None:
-				response = {'result' : False}
-			else:
-				response = {'result' : True, 'value' : value}
-			return flask.jsonify(response)
+@App.route('/get', methods = ['GET'])
+def get():
+	data = flask.request.form
+	key = data['key']
+	conn = getConn()
+	value = conn.get(key)
+	if value is None:
+		response = {'result' : False}
+	else:
+		response = {'result' : True, 'value' : value}
+	return flask.jsonify(response)
 
-		@App.route('/set', methods = ['POST'])
-		def set():
-			data = flask.request.form
-			conn = getConn()
-			conn.set(data['key'], data['value'])
-			return flask.jsonify({'result' : True})
+@App.route('/set', methods = ['POST'])
+def set():
+	data = flask.request.form
+	conn = getConn()
+	conn.set(data['key'], data['value'])
+	return flask.jsonify({'result' : True})
 
-		if __name__ == '__main__':
-			App.run(host = '0.0.0.0', port = 8080)
-		```
+if __name__ == '__main__':
+	App.run(host = '0.0.0.0', port = 8080)
+```
 
 
 #### 二.　一开始我的Dockerfile ####
