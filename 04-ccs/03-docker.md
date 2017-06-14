@@ -1,7 +1,8 @@
 本小结内容 :
 
         1. 练手 Dockerfile for http+redis
-        2. 多进程Docker存在的问题
+        2. 多后台进程Docker存在的问题
+        3. 多后台进程Docker的解决方案
 
 
 #### 一.　容器所使用的代码文件 ####
@@ -200,3 +201,32 @@ if __name__ == '__main__':
         而我有两个进程，一个redis，一个pythonweb，没法在一个容器里运行两个前台任务啊，因为启动第一个前台进程后就会停住
         即，如何才能在docker中运行多个进程
         即，多进程docker的解决方案又是什么 ?
+
+
+#### 四.　多进程docker的解决方案 ####
+
+        首先说明清楚原因 :
+        
+        // start.sh
+        redis-server path/redis.conf
+        python main.py >web.log 2>&1 &
+        
+        1. 原来的Dockerfile里定义的启动命令是 CMD sh start.sh
+           -> 所以在docker眼里，它认为这个容器的任务就是执行这个shell脚本
+           -> 所以，尽管在shell脚本中启动了后台方式的redis和webserver
+           -> 　　　然当这个脚本执行完后，docker就认为这个容器的使命结束了
+        
+        2. 所以，要想让容器维持运行状态
+           -> 就要让这个shell脚本不能退出
+           -> 可以在原脚本最后加个死循环，例如这样写 :
+              while [ true ]
+              do
+                  sleep 10
+              done
+
+        综上，要在同一个容器中，跑多个后台进程的方法 :
+        1. Dockerfile中生成一个shell脚本，其内容是 :
+           先以后台方式启动你所需的多个后台进程
+           再跑一个死循环
+        2. Dockerfile的启动命令，设置为执行该shell脚本
+        3. 创建守护式容器
